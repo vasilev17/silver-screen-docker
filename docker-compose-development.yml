@@ -1,0 +1,55 @@
+version: '3.5'
+
+services:
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: "${DATABASE_PASSWORD}"
+      MYSQL_DATABASE: SilverScreen
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - docker-network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_USER: root
+      PMA_PASSWORD: "${DATABASE_PASSWORD}"
+      PMA_PORT: 3306
+      PMA_HOST: mysql
+    ports:
+      - 5050:80
+    networks:
+      - docker-network
+
+  # silver-screen-api:
+  #   container_name: silver-screen-api
+  #   restart: "always"
+  #   build:
+  #     context: ../SilverScreen-API
+  #     dockerfile: Dockerfile 
+  #   ports:
+  #     - "5000:80"
+  #   depends_on: 
+  #     - mysql
+  #   networks:
+  #     - docker-network
+  #   environment: 
+  #     SSDbPass: "${DATABASE_PASSWORD}"
+  #     SSJWTKey: "${JWT_KEY}"
+  #     SSPassEncrypt: "${PASSWORD_ENCRYPTION}"
+
+networks:
+  docker-network:
+    driver: bridge
+volumes:
+  mysql_data:
