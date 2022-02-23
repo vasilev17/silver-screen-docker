@@ -14,8 +14,6 @@ services:
       - 3306
     volumes:
       - mysql_data:/var/lib/mysql
-    networks:
-      - docker-network
 
   phpmyadmin:
     image: phpmyadmin:latest
@@ -28,8 +26,6 @@ services:
       PMA_HOST: mysql
     ports:
       - 5050:80
-    networks:
-      - docker-network
 
   silver-screen-api:
     container_name: silver-screen-api
@@ -41,15 +37,11 @@ services:
       - "5000:80"
     depends_on: 
       - mysql
-    networks:
-      - docker-network
     environment: 
       SSDbPass: "${DATABASE_PASSWORD}"
       SSJWTKey: "${JWT_KEY}"
       SSPassEncrypt: "${PASSWORD_ENCRYPTION}"
+      MYSQL_DATABASE_IP: mysql
 
-networks:
-  docker-network:
-    driver: bridge
 volumes:
   mysql_data:
